@@ -38,6 +38,9 @@ def render_pin(spec, name):
         fn = os.path.join(WORK, hashlib.md5(u.encode()).hexdigest()[:10] + '_' + u.split('/')[-1])
         local.append(_get(u, fn))
     s = dict(spec, images=local)
+    if spec.get('background', '').startswith('http'):
+        u = spec['background']
+        s['background'] = _get(u, os.path.join(WORK, 'bg_' + hashlib.md5(u.encode()).hexdigest()[:10] + '.png'))
     out = os.path.join(WORK, name + '.png')
     img = pm['build'](s)
     img.save(out, optimize=True)

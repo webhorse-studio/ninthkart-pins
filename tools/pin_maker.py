@@ -15,7 +15,12 @@ spec.json keys:
   images     list of local image paths (first = hero). Previews with a light
              background and a white page are auto-cropped to the page.
   accent     hex accent colour, e.g. "#1F7A6D" (default teal)
-  tilt       degrees to rotate the hero image in layout E (default -4)
+  tilt       degrees to rotate the hero image in layout E/L (default -4 for E, -3 for L)
+  background local path of a lifestyle scene (layout "L"): e.g. a Canva AI desk flat-lay
+             with an empty centre. The REAL product page is composited on top in code,
+             so the product shown is always exactly what is sold.
+Layout "L" lifestyle: full-bleed background scene, headline on a frosted card, real page(s)
+             placed centre with a soft shadow, price tag and CTA.
 No logo or brand badge is drawn (current NinthKart policy).
 The bottom 10% of the canvas is kept free of text (Pinterest mobile overlay).
 """
@@ -81,10 +86,13 @@ def crop_page(im):
 def shadowed(img, radius=18, offset=(0, 14), opacity=70):
     pad = radius * 3
     base = Image.new('RGBA', (img.width + pad * 2, img.height + pad * 2), (0, 0, 0, 0))
-    sh = Image.new('RGBA', img.size, (0, 0, 0, opacity))
-    base.paste(sh, (pad + offset[0], pad + offset[1]))
+    a = img.convert('RGBA').getchannel('A').point(lambda v: opacity if v > 8 else 0)
+    sh = Image.new('RGBA', img.size, (0, 0, 0, 0))
+    sh.putalpha(a)
+    base.paste(sh, (pad + offset[0], pad + offset[1]), sh)
     base = base.filter(ImageFilter.GaussianBlur(radius))
-    base.paste(img.convert('RGBA'), (pad, pad))
+    rgba = img.convert('RGBA')
+    base.paste(rgba, (pad, pad), rgba)
     return base, pad
 
 
@@ -184,6 +192,8 @@ def build(spec):
     cta = spec.get('cta', 'Instant download')
     price = spec.get('price')
 
+    if layout == 'L':
+        return build_lifestyle(spec, imgs, accent, ink, cream, cta, price)
     if layout == 'E':
         bg = accent
     elif layout == 'D':
@@ -248,6 +258,64 @@ def build(spec):
             price_tag(canvas, price, W - 120, box[1] + 40, (255, 255, 255), fg=accent)
 
     cta_bar(d, cta, (224, 110, 54) if layout != 'E' else ink)
+    return canvas.convert('RGB')
+
+
+def cover(img, w, h):
+    r = max(w / img.width, h / img.height)
+    im = img.resize((int(img.width * r) + 1, int(img.height * r) + 1), Image.LANCZOS)
+    x, y = (im.width - w) // 2, (im.height - h) // 2
+    return im.crop((x, y, x + w, y + h))
+
+
+def build_lifestyle(spec, imgs, accent, ink, cream, cta, price):
+    bgp = spec.get('background')
+    if bgp and os.path.exists(bgp):
+        canvas = cover(Image.open(bgp).convert('RGB'), W, H).convert('RGBA')
+    else:
+        canvas = Image.new('RGBA', (W, H), cream + (255,))
+    # frosted headline card
+    probe = ImageDraw.Draw(Image.new('RGB', (10, 10)))
+    f = font('Bold', 96)
+    lines = wrap(probe, spec['headline'], f, 800)
+    size = 96
+    while (len(lines) > 2 or any(probe.textlength(l, font=f) > 800 for l in lines)) and size > 60:
+        size -= 4
+        f = font('Bold', size)
+        lines = wrap(probe, spec['headline'], f, 800)
+    lh = int(size * 1.08)
+    sub = spec.get('subhead')
+    card_h = 60 + len(lines) * lh + (60 if sub else 0) + 20
+    card = canvas.crop((50, 50, W - 50, 50 + card_h)).filter(ImageFilter.GaussianBlur(14))
+    veil = Image.new('RGBA', card.size, (255, 253, 249, 205))
+    card = Image.alpha_composite(card.convert('RGBA'), veil)
+    mask = Image.new('L', card.size, 0)
+    ImageDraw.Draw(mask).rounded_rectangle([0, 0, card.width, card.height], radius=36, fill=255)
+    canvas.paste(card, (50, 50), mask)
+    d = ImageDraw.Draw(canvas)
+    y = 50 + 40
+    for l in lines:
+        d.text((W / 2, y), l, font=f, fill=ink, anchor='mt')
+        y += lh
+    if sub:
+        fs = font('Medium', 36)
+        d.text((W / 2, y + 12), wrap(d, sub, fs, 820)[0], font=fs, fill=accent, anchor='mt')
+    top = 50 + card_h + 40
+    bottom = SAFE_BOTTOM - 130
+    hero = imgs[0].convert('RGBA')
+    t = spec.get('tilt', -3)
+    if t:
+        hero = hero.rotate(t, expand=True, resample=Image.BICUBIC)
+    if len(imgs) >= 2 and imgs[0].width > imgs[0].height * 1.1:
+        mid = top + (bottom - top) * 0.5
+        place(canvas, imgs[1].convert('RGBA').rotate(2, expand=True, resample=Image.BICUBIC), (170, int(mid) - 20, W - 50, bottom))
+        box = place(canvas, hero, (50, top, W - 170, int(mid) + 50))
+    else:
+        box = place(canvas, hero, (90, top, W - 90, bottom))
+    if price:
+        price_tag(canvas, price, min(box[2] - 30, W - 100), box[3] - 40, (224, 110, 54))
+    d = ImageDraw.Draw(canvas)
+    cta_bar(d, cta, (224, 110, 54))
     return canvas.convert('RGB')
 
 
