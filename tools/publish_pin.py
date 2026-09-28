@@ -6,51 +6,64 @@ Usage in a workbench cell:
     result = render_pin(spec, name)          # render + archive only (dry run)
     result = publish_pin(spec, meta, name)   # render + archive + create the Pinterest pin
 
-spec: pin_maker spec, but "images" are raw.githubusercontent.com URLs (downloaded here).
+spec: a pin spec. "images" are raw.githubusercontent.com URLs (downloaded here).
+  v2 layouts (M, Z, N, F, I) are rendered by tools/pin_v2.py; old layouts (A-E, L) by tools/pin_maker.py.
+  Layout M: pass "scene": "<id from bg/scenes.json>" (scene file + paper box are fetched here).
 meta: {"board_id", "title", "description", "alt_text", "link"}
-name: file stem for the archive copy, e.g. "2026-09-27-kalender-2027-A"
+name: file stem for the archive copy, e.g. "2026-09-29-printable-calendar-2027-M"
 """
-import base64, json, os, urllib.request, hashlib
+import base64, json, os, urllib.request, hashlib, time
 
 RAW = 'https://raw.githubusercontent.com/webhorse-studio/ninthkart-pins/main/'
 WORK = '/home/user/nk/pins'
 os.makedirs(WORK, exist_ok=True)
+V2 = ('M', 'Z', 'N', 'F', 'I')
 
 
-def _get(url, dest):
-    if not os.path.exists(dest):
-        with urllib.request.urlopen(url, timeout=30) as r:
+def _get(url, dest, fresh=False):
+    if fresh or not os.path.exists(dest):
+        sep = '&' if '?' in url else '?'
+        u = url + (sep + 't=%d' % time.time() if fresh else '')
+        with urllib.request.urlopen(u, timeout=60) as r:
             open(dest, 'wb').write(r.read())
     return dest
 
 
-def _pin_maker():
-    p = _get(RAW + 'tools/pin_maker.py?nocache', os.path.join(WORK, 'pin_maker.py'))
-    ns = {'__file__': p, '__name__': 'pin_maker'}
+def _load(tool):
+    p = _get(RAW + 'tools/' + tool + '.py', os.path.join(WORK, tool + '.py'), fresh=True)
+    ns = {'__file__': p, '__name__': tool}
     exec(open(p).read(), ns)
     return ns
 
 
-def render_pin(spec, name):
-    pm = _pin_maker()
+def render_pin(spec, name, archive=True):
+    layout = spec.get('layout', 'A').upper()
     local = []
-    for u in spec['images']:
-        fn = os.path.join(WORK, hashlib.md5(u.encode()).hexdigest()[:10] + '_' + u.split('/')[-1])
+    for u in spec.get('images', []):
+        fn = os.path.join(WORK, hashlib.md5(u.encode()).hexdigest()[:10] + '_' + u.split('/')[-1].split('?')[0])
         local.append(_get(u, fn))
     s = dict(spec, images=local)
     if spec.get('background', '').startswith('http'):
         u = spec['background']
         s['background'] = _get(u, os.path.join(WORK, 'bg_' + hashlib.md5(u.encode()).hexdigest()[:10] + '.png'))
+    if layout == 'M' and spec.get('scene') and not spec.get('scene_data'):
+        scenes = json.load(open(_get(RAW + 'bg/scenes.json', os.path.join(WORK, 'scenes.json'), fresh=True)))
+        sc = scenes[spec['scene']]
+        s['scene_data'] = sc
+        s['background'] = _get(RAW + 'bg/' + sc['file'], os.path.join(WORK, 'scene_' + sc['file']))
+    mod = _load('pin_v2' if layout in V2 else 'pin_maker')
+    img = mod['build'](s)
     out = os.path.join(WORK, name + '.png')
-    img = pm['build'](s)
     img.save(out, optimize=True)
     data = open(out, 'rb').read()
     b64 = base64.b64encode(data).decode()
-    r, e = run_composio_tool('GITHUB_CREATE_OR_UPDATE_FILE_CONTENTS', {
-        'owner': 'webhorse-studio', 'repo': 'ninthkart-pins', 'branch': 'main',
-        'path': f'pins/{name}.png', 'message': f'Pin image {name}', 'content': b64})
-    archive = RAW + f'pins/{name}.png' if not e else None
-    return {'file': out, 'bytes': len(data), 'size': img.size, 'archive_url': archive, 'archive_error': e, 'b64': b64}
+    arch, err = None, None
+    if archive:
+        r, err = run_composio_tool('GITHUB_CREATE_OR_UPDATE_FILE_CONTENTS', {
+            'owner': 'webhorse-studio', 'repo': 'ninthkart-pins', 'branch': 'main',
+            'path': f'pins/{name}.png', 'message': f'Pin image {name}', 'content': b64})
+        arch = RAW + f'pins/{name}.png' if not err else None
+    return {'file': out, 'bytes': len(data), 'size': img.size, 'archive_url': arch, 'archive_error': err, 'b64': b64}
 
 
 def publish_pin(spec, meta, name):

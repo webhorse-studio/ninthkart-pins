@@ -1,0 +1,6 @@
+{
+  "desk-portrait-01":   {"file": "mock-desk-portrait-01.png",   "paper": [201, 353, 793, 1166], "orientation": "portrait",  "note": "oak desk, coffee, gold pen, eucalyptus, glasses"},
+  "clipboard-01":       {"file": "mock-clipboard-01.png",       "paper": [284, 384, 805, 1157], "orientation": "portrait",  "note": "wood clipboard on cream linen, dried flowers"},
+  "fridge-01":          {"file": "mock-fridge-01.png",          "paper": [285, 343, 740, 982],  "orientation": "portrait",  "note": "white fridge, two wooden magnets, basil + lemons"},
+  "marble-landscape-01":{"file": "mock-marble-landscape-01.png","paper": [69, 380, 929, 1037],  "orientation": "landscape", "note": "marble desk, latte, plant, pen, phone"}
+}
