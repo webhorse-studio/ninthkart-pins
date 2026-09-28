@@ -58,6 +58,7 @@ PALETTES = {
     'forest':     dict(bg='#F2EFE6', ink='#15261C', accent='#234B35', pop='#E3A33B', soft='#DDE3D4'),
     'plum':       dict(bg='#F3EDF5', ink='#241631', accent='#5B2A86', pop='#F1C04E', soft='#E1D3EA'),
     'tomato':     dict(bg='#FFF1EA', ink='#231815', accent='#E4572E', pop='#1F4E5F', soft='#FAD7C8'),
+    'maroon':     dict(bg='#FBF3E6', ink='#3A0F1F', accent='#7A1F3D', pop='#D9A441', soft='#F1DFC4'),
 }
 
 
