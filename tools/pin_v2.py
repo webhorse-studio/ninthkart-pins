@@ -527,22 +527,39 @@ def build_I(spec, p, pages):
     y = draw_lines(d, lines, f, size, W / 2, M + 60, p['ink'], lh=1.0)
     items = spec.get('items', [])[:12]
     card_h = 250 if pages else 0
-    avail = H - y - 40 - card_h - M - 20
-    rh = min(92, avail / max(1, len(items)))
-    fchip = font('poppins-bold', int(rh * 0.36))
-    flab = font('poppins-medium', int(rh * 0.38))
-    y += 36
+    bottom_res = card_h + (0 if pages else 110)
+    avail = H - y - 40 - bottom_res - M - 20
+    n = max(1, len(items))
+    rh = min(92 if pages else 200, avail / n)
+    y += 36 if pages else max(36, (avail - rh * n) / 2 + 20)
+    fchip = font('poppins-bold', int(min(rh * 0.36, 38)))
     chip_w = max(d.textlength(c, font=fchip) for c, _ in items) + 44 if items else 0
+    lab_w = W - 2 * M - chip_w - 30
     for i, (chip, label) in enumerate(items):
         cy = y + i * rh
-        d.rounded_rectangle([M, cy + rh * 0.14, M + chip_w, cy + rh * 0.86], radius=rh * 0.36, fill=p['accent'])
+        size = int(min(rh * 0.38, 40))
+        while True:
+            flab = font('poppins-medium', size)
+            ll = wrap(d, label, flab, lab_w)
+            if (len(ll) * size * 1.2 <= rh * 0.86 and len(ll) <= 3) or size <= 22:
+                break
+            size -= 2
+        ch = min(rh * 0.72, 76)
+        d.rounded_rectangle([M, cy + (rh - ch) / 2, M + chip_w, cy + (rh + ch) / 2], radius=ch / 2, fill=p['accent'])
         d.text((M + chip_w / 2, cy + rh / 2), chip, font=fchip, fill=(255, 255, 255), anchor='mm')
-        lab = label
-        while d.textlength(lab, font=flab) > W - 2 * M - chip_w - 30 and len(lab) > 4:
-            lab = lab[:-2]
-        d.text((M + chip_w + 26, cy + rh / 2), lab, font=flab, fill=p['ink'], anchor='lm')
+        ty = cy + rh / 2 - (len(ll) - 1) * size * 0.6
+        for j, l in enumerate(ll):
+            d.text((M + chip_w + 26, ty + j * size * 1.2), l, font=flab, fill=p['ink'], anchor='lm')
         if i < len(items) - 1:
             d.line([(M + chip_w + 26, cy + rh), (W - M, cy + rh)], fill=p['soft'], width=2)
+    if not pages:
+        t = spec.get('cta', 'Read more')
+        f = font('poppins-semibold', 36)
+        tw = d.textlength(t, font=f) + 70 + 52
+        x0 = (W - tw) / 2
+        d.rounded_rectangle([x0, H - M - 76, x0 + tw, H - M], radius=38, fill=p['accent'])
+        d.text((x0 + 35, H - M - 37), t, font=f, fill=(255, 255, 255), anchor='lm')
+        arrow(d, x0 + 35 + d.textlength(t, font=f) + 14, H - M - 37, 34, (255, 255, 255))
     if pages:
         cy0 = H - M - card_h
         d.rounded_rectangle([M, cy0, W - M, H - M], radius=30, fill=p['soft'])
