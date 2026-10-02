@@ -1,8 +1,79 @@
 {
-  "desk-portrait-01":   {"file": "mock-desk-portrait-01.png",   "paper": [201, 353, 793, 1166], "orientation": "portrait",  "note": "oak desk, coffee, gold pen, eucalyptus, glasses"},
-  "clipboard-01":       {"file": "mock-clipboard-01.png",       "paper": [284, 384, 805, 1157], "orientation": "portrait",  "note": "wood clipboard on cream linen, dried flowers"},
-  "fridge-01":          {"file": "mock-fridge-01.png",          "paper": [285, 343, 740, 982],  "orientation": "portrait",  "note": "white fridge, two wooden magnets, basil + lemons"},
-  "marble-landscape-01":{"file": "mock-marble-landscape-01.png","paper": [69, 380, 929, 1037],  "orientation": "landscape", "note": "marble desk, latte, plant, pen, phone"},
-  "walnut-landscape-01":{"file": "mock-walnut-landscape-01.png","paper": [122, 411, 879, 979],  "orientation": "landscape", "note": "walnut desk, autumn leaves, tea mug, pencil, eucalyptus"},
-  "corkboard-portrait-01":{"file": "mock-corkboard-portrait-01.png","paper": [164, 249, 839, 1196], "orientation": "portrait",  "note": "cork board, wooden push pins at paper corners, eucalyptus, colour pins, kraft envelope"}
+ "desk-portrait-01": {
+  "file": "mock-desk-portrait-01.png",
+  "paper": [
+   201,
+   353,
+   793,
+   1166
+  ],
+  "orientation": "portrait",
+  "note": "oak desk, coffee, gold pen, eucalyptus, glasses"
+ },
+ "clipboard-01": {
+  "file": "mock-clipboard-01.png",
+  "paper": [
+   284,
+   384,
+   805,
+   1157
+  ],
+  "orientation": "portrait",
+  "note": "wood clipboard on cream linen, dried flowers"
+ },
+ "fridge-01": {
+  "file": "mock-fridge-01.png",
+  "paper": [
+   285,
+   343,
+   740,
+   982
+  ],
+  "orientation": "portrait",
+  "note": "white fridge, two wooden magnets, basil + lemons"
+ },
+ "marble-landscape-01": {
+  "file": "mock-marble-landscape-01.png",
+  "paper": [
+   69,
+   380,
+   929,
+   1037
+  ],
+  "orientation": "landscape",
+  "note": "marble desk, latte, plant, pen, phone"
+ },
+ "walnut-landscape-01": {
+  "file": "mock-walnut-landscape-01.png",
+  "paper": [
+   122,
+   411,
+   879,
+   979
+  ],
+  "orientation": "landscape",
+  "note": "walnut desk, autumn leaves, tea mug, pencil, eucalyptus"
+ },
+ "corkboard-portrait-01": {
+  "file": "mock-corkboard-portrait-01.png",
+  "paper": [
+   164,
+   249,
+   839,
+   1196
+  ],
+  "orientation": "portrait",
+  "note": "cork board, wooden push pins at paper corners, eucalyptus, colour pins, kraft envelope"
+ },
+ "washi-wall-landscape-01": {
+  "file": "mock-washi-wall-landscape-01.png",
+  "paper": [
+   152,
+   438,
+   848,
+   940
+  ],
+  "orientation": "landscape",
+  "note": "off-white wall, sheet taped with pink washi tape, pothos leaf top-left, wooden shelf with bubble candle bottom-right"
+ }
 }
