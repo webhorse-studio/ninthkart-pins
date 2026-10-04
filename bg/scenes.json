@@ -86,5 +86,16 @@
     ],
     "orientation": "portrait",
     "note": "warm wooden kitchen table, pine sprigs, fairy lights, gingerbread cookies, red berries, cocoa with marshmallows (Canva MAHW9PeIcl0; added 3 Oct; auto-detected, fill 0.95)"
+  },
+  "classroom-landscape-01": {
+    "file": "mock-classroom-landscape-01.png",
+    "paper": [
+      61,
+      359,
+      938,
+      1025
+    ],
+    "orientation": "landscape",
+    "note": "light oak classroom table, coloured pencils top-left, crayon pot top-right, red apple bottom-left, wooden ruler bottom-right (Canva MAHXDO55CKE, helper page 9; added 4 Oct; auto-detected, fill 0.98, ratio 1.32)"
   }
 }
