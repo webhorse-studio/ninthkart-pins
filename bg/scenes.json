@@ -97,5 +97,16 @@
     ],
     "orientation": "landscape",
     "note": "light oak classroom table, coloured pencils top-left, crayon pot top-right, red apple bottom-left, wooden ruler bottom-right (Canva MAHXDO55CKE, helper page 9; added 4 Oct; auto-detected, fill 0.98, ratio 1.32)"
+  },
+  "giftwrap-portrait-01": {
+    "file": "mock-giftwrap-portrait-01.png",
+    "paper": [
+      200,
+      309,
+      798,
+      1192
+    ],
+    "orientation": "portrait",
+    "note": "light oak gift-wrapping table, kraft paper roll top-left, jute twine top-right, pine sprig left, black scissors right, cinnamon sticks bottom-right (Canva MAHXJM5tAv0; auto-detected fill 0.996)"
   }
 }
