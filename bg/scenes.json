@@ -108,5 +108,16 @@
     ],
     "orientation": "portrait",
     "note": "light oak gift-wrapping table, kraft paper roll top-left, jute twine top-right, pine sprig left, black scissors right, cinnamon sticks bottom-right (Canva MAHXJM5tAv0; auto-detected fill 0.996)"
+  },
+  "blanket-landscape-01": {
+    "file": "mock-blanket-landscape-01.png",
+    "paper": [
+      97,
+      432,
+      895,
+      1024
+    ],
+    "orientation": "landscape",
+    "note": "cream cable-knit blanket, fairy lights, pine sprig, hot cocoa with marshmallows, red Nordic mitten (Canva MAHXPPrnhIc); auto-detected fill 0.98"
   }
 }
