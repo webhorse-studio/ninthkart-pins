@@ -119,5 +119,16 @@
     ],
     "orientation": "landscape",
     "note": "cream cable-knit blanket, fairy lights, pine sprig, hot cocoa with marshmallows, red Nordic mitten (Canva MAHXPPrnhIc); auto-detected fill 0.98"
+  },
+  "nye-party-portrait-01": {
+    "file": "mock-nye-party-portrait-01.png",
+    "paper": [
+      212,
+      302,
+      789,
+      1184
+    ],
+    "orientation": "portrait",
+    "note": "navy NYE party table, gold confetti, streamers, sparklers, brass clock, gold party hat (Canva MAHXVKhkUUI, helper page 12; auto-detected fill 0.979)"
   }
 }
