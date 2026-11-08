@@ -461,12 +461,12 @@ def build_N(spec, p, pages):
         ky += 44
     d.text((W / 2, ky - int(ys * 0.06)), year, font=fy, fill=p['bg'], anchor='mt')
     page = pages[0]
-    pg = fit(page, 660, 780)
+    pg = fit(page, spec.get('page_w',660), spec.get('page_h',780))
     rot = spec.get('tilt', -4)
     box = shadow_paste(canvas, pg, ((W - pg.width) / 2 - 20, 430), blur=26, off=(0, 22), alpha=110, rot=rot)
     d = ImageDraw.Draw(canvas)
     y = box[3] + 30
-    f, lines, size = fit_text(d, spec['hook'], spec.get('hook_font', 'dmserif'), W - 2 * M, H - y - 170, 84, 46, maxlines=2)
+    f, lines, size = fit_text(d, spec['hook'], spec.get('hook_font', 'dmserif'), W - 2 * M, H - y - 170, spec.get('hook_max',84), 46, maxlines=2)
     y = draw_lines(d, lines, f, size, W / 2, y, p['bg'], lh=1.02)
     if spec.get('footer'):
         d.text((W / 2, y + 16), spec['footer'], font=font('poppins-medium', 32), fill=p['soft'], anchor='mt')
