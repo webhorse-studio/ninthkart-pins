@@ -34,10 +34,12 @@ FONTS = {
     'anton': 'Anton-Regular.ttf', 'bebas': 'BebasNeue-Regular.ttf', 'archivo': 'ArchivoBlack-Regular.ttf',
     'dmserif': 'DMSerifDisplay-Regular.ttf', 'playfair': 'PlayfairDisplay.ttf', 'caveat': 'Caveat.ttf',
     'dmsans': 'DMSans.ttf', 'fraunces': 'Fraunces.ttf',
+    'lilita': 'LilitaOne-Regular.ttf', 'pacifico': 'Pacifico-Regular.ttf',
     'poppins': 'Poppins-Regular.ttf', 'poppins-medium': 'Poppins-Medium.ttf',
     'poppins-semibold': 'Poppins-SemiBold.ttf', 'poppins-bold': 'Poppins-Bold.ttf',
 }
 FONT_URLS = {
+    'LilitaOne-Regular.ttf': 'lilitaone/LilitaOne-Regular.ttf', 'Pacifico-Regular.ttf': 'pacifico/Pacifico-Regular.ttf',
     'Anton-Regular.ttf': 'anton/Anton-Regular.ttf', 'BebasNeue-Regular.ttf': 'bebasneue/BebasNeue-Regular.ttf',
     'ArchivoBlack-Regular.ttf': 'archivoblack/ArchivoBlack-Regular.ttf',
     'DMSerifDisplay-Regular.ttf': 'dmserifdisplay/DMSerifDisplay-Regular.ttf',
@@ -224,7 +226,7 @@ def draw_lines(d, lines, f, size, x, y, fill, anchor='mt', lh=1.0, spacing_px=No
     return y + len(lines) * step
 
 
-def sticker(canvas, text1, text2, cx, cy, r, bg, fg, rot=-10, f1='anton', f2='poppins-semibold'):
+def sticker(canvas, text1, text2, cx, cy, r, bg, fg, rot=-10, f1='lilita', f2='poppins-semibold'):
     s = Image.new('RGBA', (r * 2 + 20, r * 2 + 20), (0, 0, 0, 0))
     d = ImageDraw.Draw(s)
     # scalloped badge
@@ -322,14 +324,14 @@ def build_M(spec, p, pages):
     if top_room >= 230:
         band = Image.new('RGBA', (W, int(y0 - 24)), p['bg'] + (238,))
         comp.alpha_composite(band, (0, 0))
-        f, lines, size = fit_text(d, hook, spec.get('hook_font', 'dmserif'), W - 2 * M, top_room - 110, 118, 56, lh=1.0, maxlines=2)
+        f, lines, size = fit_text(d, hook, spec.get('hook_font', 'lilita'), W - 2 * M, top_room - 110, 118, 56, lh=1.0, maxlines=2)
         y = draw_lines(d, lines, f, size, W / 2, M + 4, p['ink'], lh=1.0)
         if spec.get('kicker'):
             fk = font('poppins-semibold', 32)
             d.text((W / 2, y + 18), spec['kicker'].upper(), font=fk, fill=p['accent'], anchor='mt')
     else:
         card_w = W - 2 * M
-        f, lines, size = fit_text(d, hook, spec.get('hook_font', 'dmserif'), card_w - 80, 230, 104, 52, maxlines=2)
+        f, lines, size = fit_text(d, hook, spec.get('hook_font', 'lilita'), card_w - 80, 230, 104, 52, maxlines=2)
         ch = len(lines) * size + (70 if spec.get('kicker') else 0) + 70
         card = Image.new('RGBA', (card_w, int(ch)), p['bg'] + (240,))
         cm = Image.new('L', card.size, 0)
@@ -390,7 +392,7 @@ def build_Z(spec, p, pages):
     ImageDraw.Draw(blob).ellipse([-260, 820, 700, 1780], fill=p['soft'] + (255,))
     canvas.alpha_composite(blob)
     d = ImageDraw.Draw(canvas)
-    f, lines, size = fit_text(d, spec['hook'], spec.get('hook_font', 'archivo'), W - 2 * M, 300, 104, 54, lh=1.04, maxlines=3)
+    f, lines, size = fit_text(d, spec['hook'], spec.get('hook_font', 'lilita'), W - 2 * M, 300, 104, 54, lh=1.04, maxlines=3)
     y = draw_lines(d, lines, f, size, W / 2, M + 10, p['ink'], lh=1.04)
     if spec.get('kicker'):
         d.text((W / 2, y + 14), spec['kicker'], font=font('poppins-medium', 34), fill=p['accent'], anchor='mt')
@@ -452,9 +454,9 @@ def build_N(spec, p, pages):
     d = ImageDraw.Draw(canvas)
     year = spec.get('year', '2027')
     ys = 620
-    while ys > 200 and d.textlength(year, font=font('anton', ys)) > W - 2 * M + 10:
+    while ys > 200 and d.textlength(year, font=font('lilita', ys)) > W - 2 * M + 10:
         ys -= 10
-    fy = font('anton', ys)
+    fy = font('lilita', ys)
     ky = M - 4
     if spec.get('kicker'):
         d.text((W / 2, ky), spec['kicker'].upper(), font=font('poppins-semibold', 30), fill=p['pop'], anchor='mt')
@@ -466,7 +468,7 @@ def build_N(spec, p, pages):
     box = shadow_paste(canvas, pg, ((W - pg.width) / 2 - 20, 430), blur=26, off=(0, 22), alpha=110, rot=rot)
     d = ImageDraw.Draw(canvas)
     y = box[3] + 30
-    f, lines, size = fit_text(d, spec['hook'], spec.get('hook_font', 'dmserif'), W - 2 * M, H - y - 170, spec.get('hook_max',84), 46, maxlines=2)
+    f, lines, size = fit_text(d, spec['hook'], spec.get('hook_font', 'lilita'), W - 2 * M, H - y - 170, spec.get('hook_max',84), 46, maxlines=2)
     y = draw_lines(d, lines, f, size, W / 2, y, p['bg'], lh=1.02)
     if spec.get('footer'):
         d.text((W / 2, y + 16), spec['footer'], font=font('poppins-medium', 32), fill=p['soft'], anchor='mt')
@@ -488,7 +490,7 @@ def build_F(spec, p, pages):
     canvas = Image.new('RGBA', (W, H), p['bg'] + (255,))
     d = ImageDraw.Draw(canvas)
     d.ellipse([W / 2 - 520, 560, W / 2 + 520, 1600], fill=p['soft'])
-    f, lines, size = fit_text(d, spec['hook'], spec.get('hook_font', 'dmserif'), W - 2 * M, 290, 112, 56, maxlines=3)
+    f, lines, size = fit_text(d, spec['hook'], spec.get('hook_font', 'lilita'), W - 2 * M, 290, 112, 56, maxlines=3)
     y = draw_lines(d, lines, f, size, W / 2, M + 6, p['ink'], lh=1.0)
     if spec.get('kicker'):
         d.text((W / 2, y + 14), spec['kicker'], font=font('poppins-medium', 34), fill=p['accent'], anchor='mt')
@@ -523,7 +525,7 @@ def build_I(spec, p, pages):
     d.rectangle([0, 0, W, 16], fill=p['accent'])
     if spec.get('kicker'):
         d.text((W / 2, M + 8), spec['kicker'].upper(), font=font('poppins-semibold', 30), fill=p['accent'], anchor='mt')
-    f, lines, size = fit_text(d, spec['hook'], spec.get('hook_font', 'dmserif'), W - 2 * M, 250, 110, 56, maxlines=2)
+    f, lines, size = fit_text(d, spec['hook'], spec.get('hook_font', 'lilita'), W - 2 * M, 250, 110, 56, maxlines=2)
     y = draw_lines(d, lines, f, size, W / 2, M + 60, p['ink'], lh=1.0)
     items = spec.get('items', [])[:12]
     card_h = 250 if pages else 0
